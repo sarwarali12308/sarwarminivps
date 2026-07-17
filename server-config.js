@@ -37,7 +37,7 @@ const SERVERS = [
         id: "server1",
         name: "Server 1",
         // 👉 PASTE YOUR RAILWAY / HEROKU / RENDER URL HERE:
-        url: "https://PASTE-YOUR-SERVER-1-URL-HERE",
+        url: "https://ahmedmini-bot-production.up.railway.app/",
         limit: 50
         // (enabled — this is your primary server)
     },
