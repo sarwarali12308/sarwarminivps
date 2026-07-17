@@ -1,0 +1,13 @@
+{
+  "name": "sarwar-xd-mini-pairing-site",
+  "version": "1.0.0",
+  "description": "Standalone multi-server pairing page for SARWAR XD MINI, deployed on Vercel. Talks to your Railway (or any) bot backend via /api proxy routes.",
+  "main": "index.html",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "license": "MIT"
+}

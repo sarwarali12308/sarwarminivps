@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>SARWAR-MD | Mini BOT</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+:root{
+  --bg:#04140d;--card:#0a2318;--card2:#0d2b1d;
+  --border:rgba(16,185,129,.28);--border-soft:rgba(16,185,129,.16);
+  --green:#10e878;--green2:#0dcf6a;--green-dim:#0a3d26;
+  --text:#eafff3;--muted:#8fb3a1;
+  --glow:rgba(16,232,120,.35);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{
+  background:
+    radial-gradient(ellipse 70% 45% at 50% -5%, rgba(16,232,120,.16) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 40% at 100% 100%, rgba(16,232,120,.08) 0%, transparent 55%),
+    var(--bg);
+  color:var(--text);font-family:'Poppins',sans-serif;min-height:100vh;
+  display:flex;justify-content:center;
+}
+.wrap{width:100%;max-width:520px;padding:2.2rem 1.3rem 3rem;position:relative;}
+
+/* LOGO */
+.logo-w{display:flex;justify-content:center;margin-bottom:1.1rem;}
+.logo{
+  width:96px;height:96px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #21ffa0, var(--green2) 70%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 6px rgba(16,232,120,.08), 0 0 40px var(--glow);
+  animation:pulse 3s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 6px rgba(16,232,120,.08),0 0 30px var(--glow);}50%{box-shadow:0 0 0 10px rgba(16,232,120,.05),0 0 55px var(--glow);}}
+.logo i{font-size:2.3rem;color:#04140d;}
+
+h1{
+  text-align:center;font-weight:800;font-size:2.1rem;letter-spacing:.02em;
+  color:var(--green);text-shadow:0 0 24px rgba(16,232,120,.35);
+  margin-bottom:.35rem;
+}
+.subtitle{text-align:center;color:var(--muted);font-size:.95rem;margin-bottom:1.6rem;font-weight:500;}
+
+/* CARD */
+.card{
+  background:linear-gradient(180deg, var(--card), var(--card2));
+  border:1px solid var(--border-soft);border-radius:20px;
+  padding:1.1rem;margin-bottom:1.1rem;
+}
+
+/* SERVER LIST (before selection) */
+.srv-list{max-height:340px;overflow-y:auto;border-radius:14px;}
+.srv-list::-webkit-scrollbar{width:4px;}
+.srv-list::-webkit-scrollbar-thumb{background:rgba(16,232,120,.3);border-radius:4px;}
+.srv-row{
+  display:flex;align-items:center;justify-content:space-between;
+  background:#0b1f16;border:1px solid rgba(16,232,120,.14);
+  border-radius:14px;padding:1.05rem 1.15rem;margin-bottom:.6rem;
+  cursor:pointer;transition:all .15s;
+}
+.srv-row:last-child{margin-bottom:0;}
+.srv-row:active{transform:scale(.98);}
+.srv-row.sel{border-color:var(--green);box-shadow:0 0 0 1px var(--green);}
+.srv-row .sn{font-weight:700;font-size:1rem;}
+.srv-row .sc{color:var(--muted);font-size:.85rem;}
+
+/* SELECTED SERVER CARD */
+.srv-picked{display:none;}
+.srv-picked.show{display:block;}
+.srv-picked-row{display:flex;align-items:center;gap:.9rem;}
+.srv-ico{
+  width:42px;height:42px;border-radius:10px;flex-shrink:0;
+  background:linear-gradient(135deg, var(--green), var(--green2));
+  display:flex;align-items:center;justify-content:center;color:#04140d;font-size:1.05rem;
+}
+.srv-picked-meta{flex:1;}
+.srv-picked-meta .sn{font-weight:700;font-size:1.05rem;margin-bottom:.3rem;}
+.srv-picked-stats{display:flex;gap:1.3rem;font-size:.82rem;color:var(--muted);}
+.srv-picked-stats b{color:var(--text);font-weight:600;}
+.dot-live{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:.35rem;animation:blink 1.8s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.srv-change{
+  background:#0d2b1d;border:1px solid var(--border-soft);color:var(--text);
+  border-radius:10px;padding:.5rem .85rem;font-size:.82rem;font-weight:600;
+  display:flex;align-items:center;gap:.35rem;cursor:pointer;white-space:nowrap;
+}
+
+/* INFO CARD */
+.info-card{
+  background:rgba(16,232,120,.06);border:1px solid rgba(16,232,120,.22);
+  border-radius:16px;padding:1rem 1.1rem;margin-bottom:1.1rem;
+  display:flex;gap:.75rem;
+}
+.info-ico{
+  width:26px;height:26px;border-radius:50%;background:var(--green);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  color:#04140d;font-size:.8rem;margin-top:.1rem;
+}
+.info-card h4{font-size:.95rem;font-weight:700;margin-bottom:.3rem;}
+.info-card p{font-size:.83rem;color:var(--muted);line-height:1.5;}
+
+/* FORM */
+label{display:block;font-size:.92rem;font-weight:600;margin-bottom:.6rem;}
+.inp-w{
+  display:flex;align-items:center;background:#0b1f16;
+  border:1px solid rgba(16,232,120,.18);border-radius:14px;
+  padding:0 1rem;margin-bottom:.5rem;transition:border-color .2s;
+}
+.inp-w:focus-within{border-color:var(--green);}
+.inp-w i{color:var(--muted);margin-right:.7rem;}
+.inp-w input{
+  flex:1;background:none;border:none;outline:none;
+  padding:.95rem 0;color:var(--text);font-size:.95rem;font-family:'Poppins',sans-serif;
+}
+.inp-w input::placeholder{color:#4a6659;}
+.hint{display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--muted);margin-bottom:1.1rem;}
+
+/* BUTTON */
+.btn{
+  width:100%;padding:1rem;border:none;border-radius:14px;
+  background:linear-gradient(135deg, #17ff8e, var(--green2));
+  color:#04140d;font-size:1rem;font-weight:700;font-family:'Poppins',sans-serif;
+  display:flex;align-items:center;justify-content:center;gap:.55rem;
+  cursor:pointer;transition:all .2s;box-shadow:0 8px 26px rgba(16,232,120,.25);
+}
+.btn:active{transform:scale(.98);}
+.btn:disabled{opacity:.55;cursor:not-allowed;box-shadow:none;}
+.btn.wait{background:linear-gradient(135deg,#0d8a4f,#0a6b3d);color:#cdf5e2;}
+
+/* CODE BOX */
+.code-box{
+  margin-top:.9rem;background:#0b1f16;border:1.5px solid var(--green);
+  border-radius:14px;padding:1.3rem;text-align:center;display:none;
+}
+.code-box.show{display:block;}
+.code-box .cv{
+  font-size:2.1rem;font-weight:800;letter-spacing:.35em;color:var(--green);
+  font-family:'Poppins',sans-serif;cursor:pointer;user-select:all;
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+}
+.code-box .cv i{font-size:1.2rem;}
+.copy-btn{
+  width:100%;margin-top:.85rem;padding:.85rem;border-radius:12px;
+  background:#122b1d;border:1px solid rgba(16,232,120,.2);color:var(--text);
+  font-size:.9rem;font-weight:600;display:flex;align-items:center;justify-content:center;gap:.5rem;
+  cursor:pointer;font-family:'Poppins',sans-serif;
+}
+
+/* STATUS TEXT */
+#genStatus{text-align:center;font-size:.85rem;color:var(--muted);margin-top:.7rem;display:none;}
+#genStatus.show{display:block;}
+#genStatus.err{color:#ff6b6b;}
+.spin{width:16px;height:16px;border:2px solid rgba(4,20,13,.3);border-top-color:#04140d;border-radius:50%;animation:spin .6s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:.6rem;}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%) translateY(10px);
+  background:#0d2b1d;border:1px solid var(--green);color:var(--text);
+  padding:.7rem 1.3rem;border-radius:100px;font-size:.85rem;opacity:0;
+  transition:all .3s;pointer-events:none;z-index:1000;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="logo-w"><div class="logo"><i class="fas fa-bolt"></i></div></div>
+  <h1>SARWAR-MD</h1>
+  <p class="subtitle">Generate Your Pairing Code</p>
+
+  <!-- SERVER PICKER -->
+  <div class="card" id="pickerCard">
+    <div class="srv-list" id="srvList"></div>
+  </div>
+
+  <!-- SELECTED SERVER SUMMARY (replaces picker once chosen) -->
+  <div class="card srv-picked" id="pickedCard">
+    <div class="srv-picked-row">
+      <div class="srv-ico"><i class="fas fa-server"></i></div>
+      <div class="srv-picked-meta">
+        <div class="sn" id="pickedName">—</div>
+        <div class="srv-picked-stats">
+          <span><span class="dot-live"></span>Active: <b id="pickedActive">--</b></span>
+          <span>Limit: <b id="pickedLimit">--/--</b></span>
+        </div>
+      </div>
+      <button class="srv-change" onclick="reopenPicker()"><i class="fas fa-chevron-down"></i> Select</button>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div class="info-card">
+    <div class="info-ico"><i class="fas fa-info"></i></div>
+    <div>
+      <h4>Quick Setup</h4>
+      <p>Select a server, enter your WhatsApp number to instantly generate a pairing code. No deployment needed!</p>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="card">
+    <label>WhatsApp Number</label>
+    <div class="inp-w">
+      <i class="fas fa-phone"></i>
+      <input type="tel" id="phone" placeholder="923001234567" inputmode="numeric"/>
+    </div>
+    <div class="hint"><i class="fas fa-lightbulb"></i> Include country code (e.g., 92 for Pakistan)</div>
+
+    <button class="btn" id="pb" onclick="doPair()" disabled>
+      <i class="fas fa-key"></i> Generate Pair Code
+    </button>
+    <div id="genStatus"></div>
+
+    <div class="code-box" id="cb">
+      <div class="cv" id="cv"><i class="fas fa-check-circle"></i><span id="cvText">--------</span></div>
+    </div>
+    <button class="copy-btn" id="copyBtn" style="display:none" onclick="doCopy()">
+      <i class="fas fa-copy"></i> Copy Code
+    </button>
+  </div>
+
+  <footer>© <span id="yr"></span> SARWAR-MD | Powered By SARWAR-XD-MINI</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+let SERVERS = [];
+let currentServerId = null;
+let statsTimer = null;
+let waitTimer = null;
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function currentServer(){
+  return SERVERS.find(s => s.id === currentServerId) || null;
+}
+
+async function loadServers(){
+  const list = document.getElementById('srvList');
+  try{
+    const r = await fetch('/api/servers');
+    const d = await r.json();
+    SERVERS = d.servers || [];
+    if(!SERVERS.length){
+      list.innerHTML = '<div class="srv-row"><span class="sn">No servers configured</span></div>';
+      return;
+    }
+    renderList();
+  }catch(e){
+    list.innerHTML = '<div class="srv-row"><span class="sn">Failed to load servers</span></div>';
+  }
+}
+
+function renderList(){
+  const list = document.getElementById('srvList');
+  list.innerHTML = SERVERS.map(s =>
+    `<div class="srv-row" data-id="${s.id}" onclick="pickServer('${s.id}')">
+      <span class="sn">${s.name}</span>
+      <span class="sc">Click to select</span>
+    </div>`
+  ).join('');
+}
+
+function pickServer(id){
+  currentServerId = id;
+  const srv = currentServer();
+  if(!srv) return;
+
+  document.getElementById('pickerCard').style.display = 'none';
+  document.getElementById('pickedCard').classList.add('show');
+  document.getElementById('pickedName').textContent = srv.name;
+  document.getElementById('pickedLimit').textContent = '--/' + (srv.limit ?? '--');
+
+  document.getElementById('pb').disabled = false;
+
+  if(statsTimer) clearInterval(statsTimer);
+  fetchStats();
+  statsTimer = setInterval(fetchStats, 10000);
+}
+
+function reopenPicker(){
+  document.getElementById('pickerCard').style.display = 'block';
+  document.getElementById('pickedCard').classList.remove('show');
+  document.getElementById('pb').disabled = true;
+  if(statsTimer) clearInterval(statsTimer);
+}
+
+async function fetchStats(){
+  const srv = currentServer();
+  if(!srv) return;
+  try{
+    const r = await fetch('/api/active?server=' + encodeURIComponent(srv.id));
+    const d = await r.json();
+    if(d.error){
+      document.getElementById('pickedActive').textContent = '0';
+      document.getElementById('pickedLimit').textContent = (d.limit ?? '--') + '/' + (d.limit ?? '--');
+      return;
+    }
+    document.getElementById('pickedActive').textContent = d.count ?? '0';
+    document.getElementById('pickedLimit').textContent = (d.count ?? 0) + '/' + (d.limit ?? '--');
+  }catch(e){ /* leave last known value */ }
+}
+
+loadServers();
+
+function setStatus(msg, isErr){
+  const el = document.getElementById('genStatus');
+  el.textContent = msg;
+  el.className = 'show' + (isErr ? ' err' : '');
+}
+
+function startWaitCountdown(seconds, onDone){
+  const btn = document.getElementById('pb');
+  btn.classList.add('wait');
+  let remaining = seconds;
+  const tick = () => {
+    btn.innerHTML = `<i class="fas fa-clock"></i> Wait ${remaining}s`;
+    if(remaining <= 0){
+      clearInterval(waitTimer);
+      btn.classList.remove('wait');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-key"></i> Generate Pair Code';
+      if(onDone) onDone();
+      return;
+    }
+    remaining--;
+  };
+  tick();
+  waitTimer = setInterval(tick, 1000);
+}
+
+async function doPair(){
+  const btn = document.getElementById('pb');
+  const srv = currentServer();
+  const num = document.getElementById('phone').value.replace(/\D/g,'').trim();
+
+  if(!srv){ setStatus('❌ Please select a server first', true); return; }
+  if(!num || num.length < 7){ setStatus('❌ Please enter a valid phone number with country code', true); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spin"></span> Generating...';
+  setStatus('⏳ Generating your pair code...', false);
+  document.getElementById('cb').classList.remove('show');
+  document.getElementById('copyBtn').style.display = 'none';
+
+  try{
+    const res = await fetch('/api/pair?server=' + encodeURIComponent(srv.id) + '&number=' + encodeURIComponent(num));
+    const d = await res.json();
+
+    if(d.code){
+      document.getElementById('cvText').textContent = d.code;
+      document.getElementById('cb').classList.add('show');
+      document.getElementById('copyBtn').style.display = 'flex';
+      setStatus('✅ Pair code generated successfully!', false);
+      toast('✅ Pair code generated successfully!');
+      startWaitCountdown(30);
+    } else if(d.status === 'already_connected' || d.status === 'reconnecting'){
+      setStatus('✅ This number is already connected!', false);
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-key"></i> Generate Pair Code';
+    } else {
+      throw new Error(d.error || d.message || 'Failed to generate code');
+    }
+  }catch(e){
+    setStatus('❌ Error: ' + e.message, true);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-key"></i> Generate Pair Code';
+  }
+}
+
+function doCopy(){
+  const c = document.getElementById('cvText').textContent;
+  if(!c || c === '--------') return;
+  navigator.clipboard.writeText(c).then(() => toast('✅ Code copied successfully')).catch(() => {
+    const el = document.createElement('textarea');
+    el.value = c; document.body.appendChild(el); el.select();
+    document.execCommand('copy'); document.body.removeChild(el);
+    toast('✅ Code copied successfully');
+  });
+}
+
+document.getElementById('phone').addEventListener('keydown', e => { if(e.key === 'Enter') doPair(); });
+document.getElementById('phone').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g,''); });
+</script>
+</body>
+</html>
